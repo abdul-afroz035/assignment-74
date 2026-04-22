@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-    --color-primary-default: rgb(335,81,81);
+    --color-primary-default: rgb(335,51,81);
     --color-primary-dark: rgb(199,6,21);
     --color-primary-light: rgb(240,104,111);
     --color-gray-light: rgb(244,245,246);
