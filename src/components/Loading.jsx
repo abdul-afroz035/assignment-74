@@ -6,7 +6,7 @@ import { memo } from "react";
 
 function Loading() {
     return (
-        <div className="flex h-full mx-3 justify-center items-center ">
+        <div className="flex h-100  justify-center items-center  ">
             <ImSpinner9 className="text-primary-default text-3xl animate-spin" />
         </div>
     );

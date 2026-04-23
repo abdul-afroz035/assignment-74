@@ -52,7 +52,7 @@ function CartList({ products, cart, updateCart, setLoading }) {
                     })}
                 </div>
                 <div className="flex m-0.5 justify-end px-4 py-2">
-                    <Button onClick={updateMyCart} classname="bg-blue-700">updatee cart</Button>
+                    <Button onClick={updateMyCart} className="">updatee cart</Button>
                 </div>
             </div>
 

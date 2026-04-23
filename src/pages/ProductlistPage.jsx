@@ -73,14 +73,14 @@ function ProductlistPage() {
         <div className=" bg-white max-w-6xl mx-auto my-16 py-6 px-6 ">
           <div class="flex justify-end my-4">
             <input value={query}
-              class="border border-gray-400 px-2 mr-2 rounded-sm"
+              className="border border-gray-400 px-2 mr-2 rounded-sm"
               placeholder="search"
               onChange={handleSearchChange} />
 
             <select
               value={sort}
               onChange={handleSort}
-              class="text-xs bg-gray-200 px-2 py-1">
+              className="text-xs bg-gray-200 px-2 py-1">
               <option value="default">default sorting</option>
               <option value="title">Sort by title</option>
               <option value="price-low">Sort by price : low-high</option>
@@ -93,9 +93,9 @@ function ProductlistPage() {
           {productsData.length > 0 && <Productlist Products={productsData} />}
           {productsData.length == 0 && <NoMatching />}
 
-          <button class="text-[10px] text-white bg-primary-default border-2 border-primarbg-primary-default py-1 px-2 mt-8 mr-1"> 1 </button>
-          <button class="text-[10px] text-primary-default bg-white border-2 border-primary-default py-1 px-2 mt-8 mr-1"> 2 </button>
-          <button class="text-[10px] text-primary-default bg-white border-2 border-primary-default py-1 px-1 mt-8 mr-1"> --- </button>
+          <button className="text-[10px] text-white bg-primary-default border-2 border-primarbg-primary-default py-1 px-2 mt-8 mr-1"> 1 </button>
+          <button className="text-[10px] text-primary-default bg-white border-2 border-primary-default py-1 px-2 mt-8 mr-1"> 2 </button>
+          <button className="text-[10px] text-primary-default bg-white border-2 border-primary-default py-1 px-1 mt-8 mr-1"> --- </button>
         </div>
      
 

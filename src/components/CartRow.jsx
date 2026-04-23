@@ -34,7 +34,7 @@ function CartRow({ product, quantity, onProductRemove, onQuantityChange,  }) {
       <span className=" w-20 mx-15 font-semibold text-slate-700">${product.price}</span>
       <input
         type="number"
-        className="py-1 px-1 w-10 mr-15  border border-gray-300 rounded-md text-gray-500"
+        className="py-1 pl-1 w-10 mr-15  border border-gray-300 rounded-md text-gray-500"
         value={quantity}
         onChange={handleChange}
       />
