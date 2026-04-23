@@ -1,29 +1,39 @@
-import React from "react";
+import React, {useContext} from "react";
+import axios from "axios";
 import { withFormik } from "formik";
 import Input from "../components/Input";
 import * as Yup from "yup";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CiShoppingCart } from "react-icons/ci";
+import { UserContext } from "../contexts/UserContext";
+import Button from "../components/Button";
 
+function callLoginApi(values, {setSubmitting, props}) {
+     const navigate = props.navigate;
+  const login = props.login;
+  const token =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiZHVsNzg2QGdtYWlsLmNvbSIsImlkIjoiMDE5ZGI1N2QtNzRmNC03MjJjLTg0OTItOTEyZDg5M2U2MzI1IiwiaWF0IjoxNzc2ODY2MzkxLCJleHAiOjE3Nzc0NzExOTF9.4PgqPyxiSBo8LjxhLUOuEgeY7O6ikZSLi3pP-GgaViU";
 
-function callLoginApi(values) {
-        console.log("sending data");
-    }
+  login(null, token);
+  navigate("/dashboard");
+  setSubmitting(false);
+  console.log("setsub check", setSubmitting)
+}
     const schema = Yup.object().shape({
-        username: Yup.string().matches(/^[a-zA-Z0-9_]+$/, "username should be alphabates or number or email").min(3).required(),
+        email: Yup.string().email().required(),
         myPassword: Yup.string().min(8).max(12).required(),
     });
 
     const initialValues = {
-        username: "",
+        email: "",
         myPassword: "",
     };
 
-export function LoginPage({handleSubmit, errors, touched, values, handleChange, handleBlur}) {
+export function LoginPage({handleSubmit, errors, touched, values, handleChange, handleBlur,isValid,isSubmitting,dirty,}) {
   
     
     return (
-        <div className=" flex flex-col h-full justify-center items-center bg-white max-w-6xl mx-auto my-16 py-8 px-6" >
+        <div className=" flex flex-col h-full justify-center items-center bg-white max-w-6xl mx-auto my-15 py-12 px-6 shadow-sm" >
             <div className="text-9xl text-gray-900 pb-4">
                 <CiShoppingCart />
             </div>
@@ -33,18 +43,18 @@ export function LoginPage({handleSubmit, errors, touched, values, handleChange, 
                         DOWN-TOWN CityCart
                     </div>
                     <Input
-                        values = {values.username}
-                        error = {errors.username}
-                        touched = {touched.username}
+                        values = {values.email}
+                        error = {errors.email}
+                        touched = {touched.email}
                         onChange = {handleChange}
                         onBlur = {handleBlur}
-                        label="enter username "
+                        label="enter email "
                         id="userName"
-                        name="username"
+                        name="email"
                         type="text"
                         required
-                        autoComplete="username"
-                        placeholder="username or email"
+                        autoComplete="email"
+                        placeholder="email"
                         classname="rounded-b-none"
                     />
 
@@ -71,31 +81,37 @@ export function LoginPage({handleSubmit, errors, touched, values, handleChange, 
                     </div>
 
                     <div className="self-center space-x-2">
-                        <button
+                        <Button
                             type="button"
-                            className="text-white bg-primary-default hover:bg-primary-dark px-2 py-0.5 rounded-sm self-end">
+                            disabled={!dirty}
+                            className="disabled:bg-primary-light px-2 py-0.5 rounded-sm self-end">
                             Reset
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             type="submit"
-                            className="text-white bg-primary-default hover:bg-primary-dark disabled:bg-primary-light px-2 py-0.5 rounded-sm ">
+                            disabled={!isValid || isSubmitting}
+                            className=" disabled:bg-primary-light px-2 py-0.5 rounded-sm ">
                             Login
-                        </button>
+                        </Button>
                     </div>
 
                     <div className="self-center text-sm mt-2 text-gray-400 "> don't have an account?
-                        <Link to="/signupPage" className="text-primary-default"> Signup </Link>
+                        <Link to="/signupPage" className="text-primary-default underline hover:text-primary-dark"> Signup </Link>
                     </div>
                 </form>
         </div>
     );
 }
 
-const myHOC = withFormik({
+const OptimizedLoginPage = withFormik({
+    mapPropsToValues: () => initialValues,
     validationSchema: schema, 
-    initialValues: initialValues,
-    handleSubmit: callLoginApi
-});
-const easyLogin = myHOC(LoginPage);
+    handleSubmit: callLoginApi,
+    validateOnMount: true,
+})(LoginPage);
 
-export default easyLogin;
+export default function LoginPageWithNavigate() {
+  const navigate = useNavigate();
+  const { login } = useContext(UserContext);
+  return <OptimizedLoginPage navigate={navigate} login={login} />;
+}

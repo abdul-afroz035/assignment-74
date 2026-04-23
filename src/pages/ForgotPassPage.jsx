@@ -2,11 +2,14 @@ import React from "react";
 import { withFormik } from "formik";
 import Input from "../components/Input";
 import * as Yup from "yup";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CiShoppingCart } from "react-icons/ci";
 
 function callForgotApi() {
-    console.log("data sending");
+    const { navigate } = props;
+    alert(`Password reset link sent to ${values.email}`);
+    navigate("/login");
+    setSubmitting(false);
 }
 const schema = Yup.object().shape({
     myEmail: Yup.string().email().required(),
@@ -55,11 +58,14 @@ export function ForgotPassPage({ handleSubmit, errors, touched, values, handleCh
         </div>
     );
 }
-const myHOC = withFormik({
+const OptimizedForgotPassPage = withFormik({
+    mapPropsToValues: () => initialValues,
     validationSchema: schema,
-    initialValues: initialValues,
-    handleSubmit: callForgotApi
-});
-const easyForgot = myHOC(ForgotPassPage);
+    handleSubmit: callForgotApi,
+    validateOnMount: true,
+})(ForgotPassPage);
 
-export default easyForgot;
+export default function ForgotPassPageWithNavigate() {
+    const navigate = useNavigate();
+    return <OptimizedForgotPassPage navigate={navigate} />;
+}

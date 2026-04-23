@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import Button from "./Button";
 
 function CartTotal({ products, cart }) {
 
@@ -26,7 +27,7 @@ function CartTotal({ products, cart }) {
                     <h2 className=" font-semibold text-slate-700">SubTotals</h2>
                     <h1 className="font-semibold text-slate-700">${subTotal}</h1>
                 </div>
-                <button className="bg-primary-default p-2 m-4 rounded grow font-semibold text-white">Proceed to checkout</button>
+                <Button className="p-2 my-4 mx-1 rounded-lg grow font-semibold ">Proceed to checkout</Button>
 
             </div>
         </div>

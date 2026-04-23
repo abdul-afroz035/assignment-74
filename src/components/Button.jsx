@@ -1,13 +1,13 @@
 import React,{ memo } from "react";
 import { twMerge } from "tailwind-merge";
 
-function Button({ classname, ...rest}) {
+function Button({ className, ...rest}) {
     
     return (
 
         <button
             {...rest}
-            className={twMerge("text-sm py-1 px-3 ml-1 border bg-primary-default hover:bg-primary-dark text-white rounded-lg", classname)}
+            className={twMerge("text-sm py-1 px-3 ml-1 border bg-primary-default hover:bg-primary-dark text-white rounded-lg", className)}
            
         ></button>
     );

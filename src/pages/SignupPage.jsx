@@ -1,18 +1,36 @@
-import React from "react";
+import React, {useContext} from "react";
 import { withFormik } from "formik";
 import Input from "../components/Input";
 import * as Yup from "yup";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CiShoppingCart } from "react-icons/ci";
 import Button from "../components/Button";
+import { addUser } from "../api";
+import { UserContext } from "../contexts/UserContext";
 
-function callSignupApi(values) {
-    console.log("signupPage upi calling");
+function callSignupApi(values, {setSubmitting, props }) {
+   const navigate = props.navigate;
+  const login = props.login;
+  console.log("login wala",login);
+     console.log("sigup api name2 calling",values.fullName);
+
+  addUser(values.fullName.split(" ")[0], values.myEmail, values.myPassword)
+    .then(({ user, token }) => {
+      login(user, token);
+      console.log("token ml gya",token )
+      navigate("/dashboard");
+    })
+    .catch((error) => {
+      const errorMessage = error.message || "Signup failed";
+      alert(errorMessage);
+    })
+    .finally(() => {
+      setSubmitting(false);
+    });
 }
 const schema = Yup.object().shape({
     fullName: Yup.string().required(),
     myEmail: Yup.string().email().required(),
-    userName: Yup.string().required(),
     myPassword: Yup.string().min(8).max(12).required(),
     confermPass: Yup.string().min(8).max(12).required(),
 });
@@ -20,13 +38,12 @@ const schema = Yup.object().shape({
 const initialValues = {
     fullName: "",
     myEmail: "",
-    userName: "",
     myPassword: "",
     confermPass: "",
 };
 
-export function SignupPage({ handleSubmit, errors, touched, values, handleChange, handleBlur }) {
-    console.log("dirty check", );
+export function SignupPage({ handleSubmit, errors, touched, values, handleChange, handleBlur, isSubmitting }) {
+    ;
 
     return (
         <div className=" flex flex-col h-full justify-center items-center bg-white max-w-6xl mx-auto my-12 py-6 px-6" >
@@ -68,20 +85,6 @@ export function SignupPage({ handleSubmit, errors, touched, values, handleChange
                     placeholder="Email"
                 />
 
-                <Input
-                    values={values.userName}
-                    error={errors.userName}
-                    touched={touched.userName}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    label="enter username "
-                    id="userName"
-                    name="userName"
-                    type="text"
-                    required
-                    autoComplete="userName"
-                    placeholder="username or email"
-                />
 
                 <Input
                     values={values.myPassword}
@@ -116,12 +119,14 @@ export function SignupPage({ handleSubmit, errors, touched, values, handleChange
                 <div className="self-center space-x-2">
                     <Button
                         type="button"
-                        classname="  px-3 py-0.5 rounded-sm self-end">
+                        disabled={!dirty}
+                        className=" disabled:bg-primary-light px-3 py-0.5 rounded-sm self-end">
                         Reset
                     </Button>
                     <Button
                         type="submit"
-                        classname=" disabled:bg-primary-light px-2 py-0.5 rounded-sm ">
+                        disabled={!isValid || isSubmitting}
+                        className=" disabled:bg-primary-light px-2 py-0.5 rounded-sm ">
                         Signup
                     </Button>
                 </div>
@@ -136,11 +141,15 @@ export function SignupPage({ handleSubmit, errors, touched, values, handleChange
 
 }
 
-const myHOC = withFormik({
-    validationSchema: schema,
-    initialValues: initialValues,
-    handleSubmit: callSignupApi
-});
-const easySignup = myHOC(SignupPage);
+const OptimizedSignupPage = withFormik({
+    mapPropsToValues: () => initialValues,
+    validationSchema: schema, 
+    handleSubmit: callSignupApi,
+    validateOnMount: true,
+})(SignupPage);
 
-export default easySignup;
+export default function SignupPageWithNavigate() {
+  const navigate = useNavigate();
+  const { login } = useContext(UserContext);
+  return <OptimizedSignupPage navigate={navigate} login={login} />;
+}
