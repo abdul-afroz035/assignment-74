@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { getProductData } from "../api";
 import CartList from "../components/CartList";
 import Loading from "../components/Loading";
+import { CartContext } from "../contexts/CartContext";
 
-function CartPage({cart, updateCart}) {
+function CartPage() {
 
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const {cart ,updateCart} = useContext(CartContext);
 
     useEffect(function () {
         const productIds = Object.keys(cart);

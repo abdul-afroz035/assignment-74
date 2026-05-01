@@ -1,16 +1,20 @@
-import React, { useEffect, useState, useMemo , useCallback } from 'react';
+import React, { useEffect, useState, useMemo , useCallback, useContext } from 'react';
 import { Link, useParams } from "react-router-dom";
 import { getProductData } from '../api';
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import Loading from '../components/Loading';
 import NotFound from '../components/NotFound';
 import Button from '../components/Button';
+import { CartContext } from '../contexts/CartContext';
 
-function ProductdetailsPage({onAddToCart}) {
+function ProductdetailsPage() {
     const id = +(useParams().id);
     const [count, setCount] = useState(1)
     const [Product, setProduct] = useState()
     const [Loadings, setLoadings] = useState(true)
+
+    const {HandleAddToCart} = useContext(CartContext);
+    
 
 
     useEffect(function () {
@@ -31,8 +35,8 @@ function ProductdetailsPage({onAddToCart}) {
         setCount(newNum)
      }, []);
 
-    const HandleAddToCart = useCallback(function (){
-        onAddToCart(id, count)
+    const HandleCartChange = useCallback(function (){
+        HandleAddToCart(id, count)
     }, [id,count]);
 
     if (Loadings) {
@@ -69,7 +73,7 @@ function ProductdetailsPage({onAddToCart}) {
                         onChange = {HandleCountChange}>
                         </input>
 
-                        <Button onClick={HandleAddToCart}>
+                        <Button onClick={HandleCartChange}>
                             ADD TO CART
                         </Button>
 

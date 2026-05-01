@@ -16,17 +16,18 @@ function callSignupApi(values, {setSubmitting, props }) {
 
   addUser(values.fullName.split(" ")[0], values.myEmail, values.myPassword)
     .then(({ user, token }) => {
-      login(user, token);
-      console.log("token ml gya",token )
-      navigate("/dashboard");
-    })
-    .catch((error) => {
-      const errorMessage = error.message || "Signup failed";
-      alert(errorMessage);
-    })
-    .finally(() => {
-      setSubmitting(false);
-    });
+      if (user && token) {
+    
+          login?.(user, token);
+          navigate("/dashboard");
+        }
+      })
+      .catch((error) => {
+        const errorMessage = error.message || "Signup failed";
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
 }
 const schema = Yup.object().shape({
     fullName: Yup.string().required(),
@@ -42,7 +43,7 @@ const initialValues = {
     confermPass: "",
 };
 
-export function SignupPage({ handleSubmit, errors, touched, values, handleChange, handleBlur, isSubmitting }) {
+export function SignupPage({ handleSubmit, errors, touched, values, handleChange, handleBlur, isSubmitting, isValid, dirty }) {
     ;
 
     return (
