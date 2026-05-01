@@ -12,33 +12,11 @@ import SignupPage from "./pages/SignupPage";
 import ForgotPassPage from "./pages/ForgotPassPage";
 import DashboardPage from "./pages/DashboardPage";
 import UserRoute from "./components/UserRoutes";
+import CartProvider from "./contexts/CartProvider";
 
 
 function App() {
-  const saveCartItem = localStorage.getItem("my-Cart") || "{}";
-  const savedCart = JSON.parse(saveCartItem);
-
-  const [cart, setCart] = useState(savedCart)  //empty object dia initialy
-
-  function HandleAddToCart(productId, Count) {   //balti pas krege prdctDet Tag se
-    const oldCount = cart[productId] || 0;  //agar cart ke andr current prId hoga to uska count store krega 
-
-    const newCart = { ...cart, [productId]: oldCount + Count }
-    updateCart(newCart);
-  }
-
-  function updateCart(newCart) {
-    setCart(newCart);
-    const cartString = JSON.stringify(newCart);
-    localStorage.setItem("my-Cart", cartString);
-  }
-
-
-  const totalCount = useMemo(() =>
-    +Object.keys(cart).reduce((previous, current) => {
-    return +previous + cart[current];
-    }, 0) , [cart]);  // pre me initital o rhega and curr me obj.key1... ayega and then return me cart[cur] se key ka value milega
-  //  or add ho jyega or pre me jata rhega or jab sab obj trace ho jyega then totcount me final additin ayga
+  
 
   const path = window.location.pathname;
 
@@ -53,17 +31,18 @@ function App() {
   //<CartPage cart = {cart} updateCart = {setCart} />
   return (
     <UserProvider>
+      <CartProvider>
 
       <div className="  min-h-screen overflow-scroll flex flex-col">
-         {!isLoginPage && <Navbar productCount={totalCount} />}
+         {!isLoginPage && <Navbar/>}
         <div className="grow px-4 bg-gray-light">
           <Routes>
             <Route index element={<ProductlistPage />} />
             <Route path="/LoginPage" element={<LoginPage />} />
             <Route path="/SignupPage" element={<SignupPage />} />
             <Route path="/ForgotPassPage" element={<ForgotPassPage />} />
-            <Route path="/CartPage" element={<CartPage cart={cart} updateCart={updateCart} />} />
-            <Route path="/Products/:id" element={<ProductdetailsPage onAddToCart={HandleAddToCart} />} />
+            <Route path="/CartPage" element={<CartPage/>} />
+            <Route path="/Products/:id" element={<ProductdetailsPage/>} />
             <Route
               path="/dashboard"
               element={
@@ -79,6 +58,7 @@ function App() {
           {!isLoginPage &&  <Footer />}
         </div>
       </div>
+      </CartProvider>
     </UserProvider>
 
 

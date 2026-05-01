@@ -1,10 +1,12 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { CiShoppingCart } from "react-icons/ci";
 import { Link } from 'react-router-dom';
 import { memo } from "react";
 import { BiUser } from "react-icons/bi";
+import { CartContext } from '../contexts/CartContext';
 
-function Navbar({ productCount }) {
+function Navbar() {
+    const {totalCount} = useContext(CartContext);
     return (
         <div className=" bg-white py-6 px-16  w-full">
             <div className="flex justify-between items-center max-w-6xl mx-auto">
@@ -13,7 +15,7 @@ function Navbar({ productCount }) {
                     <Link className="flex flex-col items-center mb-8" to="/CartPage">
 
                         <CiShoppingCart className="text-5xl text-primary-default" />
-                        <span className="-m-9 text-primary-default">{productCount}</span>
+                        <span className="-m-9 text-primary-default">{totalCount}</span>
                     </Link>
                     <Link to="/Dashboard">
                       <BiUser className='text-3xl mt-5 text-primary-default' />
