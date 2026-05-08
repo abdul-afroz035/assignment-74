@@ -27,10 +27,10 @@ const Dashboard = () => {
               </div>
               <div>
                 <h2 className="font-semibold text-xl">
-                  Hello, {user?.user?.firstName || "User"}
+                  Hello, {user?.firstName || "User"}
                 </h2>
                 <p className="text-gray-500 text-sm">
-                  {user?.user?.email || "user@example.com"}
+                  {user?.email || "user@example.com"}
                 </p>
               </div>
             </div>

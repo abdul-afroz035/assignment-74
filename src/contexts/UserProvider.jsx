@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { UserContext } from "./UserContext";
-import axios from "axios";
+import { authUser } from "../api";
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -9,14 +9,9 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     if (token) {
-      axios
-        .get("https://r5ftltl6sj.execute-api.us-east-1.amazonaws.com/me", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+      authUser(token)
         .then((response) => {
-          setUser(response.data);
+          setUser(response.user || null);
           setLoading(false);
         })
         .catch(() => {
@@ -26,14 +21,15 @@ export const UserProvider = ({ children }) => {
           setLoading(false);
         });
     } else {
+     
       setUser(null);
       setLoading(false);
+      
     }
   }, [token]);
 
   const login = (user, token) => {
-    localStorage.setItem("token", token);
-    console.log("login ka token mila",token);
+    localStorage.setItem("token", token || "");
     setToken(token);
     setLoading(true);
     if (user) {
