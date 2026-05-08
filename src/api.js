@@ -79,3 +79,28 @@ export function addUser(firstName, email, password) {
     })
     .catch(handleAxiosError);
 }
+
+export function signInUser(email, password) {
+  const url = "https://r5ftltl6sj.execute-api.us-east-1.amazonaws.com/signin";
+  const data = {
+    email,
+    password,
+  };
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    validateStatus: () => true,
+  };
+
+  return axios
+    .post(url, data, config)
+    .then((response) => {
+      if (response.status >= 400) {
+        const errorMessage = response.data?.message || "An error occurred";
+        throw new Error(errorMessage);
+      }
+      return response.data;
+    })
+    .catch(handleAxiosError);
+}
