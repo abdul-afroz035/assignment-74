@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React from "react";
 import { withFormik } from "formik";
 import Input from "../components/Input";
 import * as Yup from "yup";
@@ -6,40 +6,50 @@ import { Link, useNavigate } from "react-router-dom";
 import { CiShoppingCart } from "react-icons/ci";
 import Button from "../components/Button";
 import { addUser } from "../api";
-import { UserContext } from "../contexts/UserContext";
+import { useUserProvider } from "../contexts/UserContext";
 
-function callSignupApi(values, {setSubmitting, props }) {
-   const navigate = props.navigate;
-  const login = props.login;
-  console.log("login wala",login);
-     console.log("sigup api name2 calling",values.fullName);
+function callSignupApi(values, { setSubmitting, props }) {
+    const navigate = props.navigate;
+    const login = props.login;
 
-  addUser(values.fullName.split(" ")[0], values.myEmail, values.myPassword)
-    .then(({ user, token }) => {
-      if (user && token) {
-    
-          login?.(user, token);
-          navigate("/dashboard");
-        }
-      })
-      .catch((error) => {
-        const errorMessage = error.message || "Signup failed";
-      })
-      .finally(() => {
-        setSubmitting(false);
-      });
+    addUser(values.fullName.split(" ")[0], values.myEmail, values.password)
+        .then((response) => {
+            const { user, token } = response;
+            if (user && token) {
+
+                login?.(user, token);
+                navigate("/dashboard");
+            }
+        })
+        .catch((error) => {
+            const errorMessage = error.message || "Signup failed";
+        })
+        .finally(() => {
+            setSubmitting(false);
+        });
 }
 const schema = Yup.object().shape({
-    fullName: Yup.string().required(),
-    myEmail: Yup.string().email().required(),
-    myPassword: Yup.string().min(8).max(12).required(),
-    confermPass: Yup.string().min(8).max(12).required(),
+    fullName: Yup.string()
+        .required(),
+    myEmail: Yup.string()
+        .email()
+        .required(),
+    password: Yup.string()
+        .min(8)
+        .required("Password is required")
+        .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+        .matches(/[^a-zA-Z0-9]/, "Password must contain at least one special character")
+        .matches(/[0-9]/, "Password must contain at least one number"),
+    confermPass: Yup.string()
+    .required()
+    .oneOf([Yup.ref("password"), undefined], "Passwords must match...")
+    .required("Conferm Password is required !"),
 });
 
 const initialValues = {
     fullName: "",
     myEmail: "",
-    myPassword: "",
+    password: "",
     confermPass: "",
 };
 
@@ -88,14 +98,14 @@ export function SignupPage({ handleSubmit, errors, touched, values, handleChange
 
 
                 <Input
-                    values={values.myPassword}
-                    error={errors.myPassword}
-                    touched={touched.myPassword}
+                    values={values.password}
+                    error={errors.password}
+                    touched={touched.password}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     label="enter Password"
                     id="user-password"
-                    name="myPassword"
+                    name="password"
                     type="password"
                     required
                     autoComplete="my-Password"
@@ -144,13 +154,13 @@ export function SignupPage({ handleSubmit, errors, touched, values, handleChange
 
 const OptimizedSignupPage = withFormik({
     mapPropsToValues: () => initialValues,
-    validationSchema: schema, 
+    validationSchema: schema,
     handleSubmit: callSignupApi,
     validateOnMount: true,
 })(SignupPage);
 
 export default function SignupPageWithNavigate() {
-  const navigate = useNavigate();
-  const { login } = useContext(UserContext);
-  return <OptimizedSignupPage navigate={navigate} login={login} />;
+    const navigate = useNavigate();
+    const { login } = useUserProvider();
+    return <OptimizedSignupPage navigate={navigate} login={login} />;
 }

@@ -127,3 +127,47 @@ export function authUser(token) {
     })
     .catch(handleAxiosError);
 }
+
+export function saveCart(cart , token) {
+  const url = "https://r5ftltl6sj.execute-api.us-east-1.amazonaws.com/cart";
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    validateStatus: () => true,
+  };
+
+  return axios
+    .post(url, cart, config)
+    .then((response) => {
+      if (response.status >= 400) {
+        const errorMessage = response.data?.message || "An error occurred";
+        throw new Error(errorMessage);
+      }
+      return response.data;
+    })
+    .catch(handleAxiosError);
+}
+
+export function getCart(token)  {
+  const url = "https://r5ftltl6sj.execute-api.us-east-1.amazonaws.com/cart";
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    validateStatus: () => true,
+  };
+
+  return axios
+    .get(url, config)
+    .then((response) => {
+      if (response.status >= 400) {
+        const errorMessage = response.data?.message || "An error occurred";
+        throw new Error(errorMessage);
+      }
+      return response.data;
+    })
+    .catch(handleAxiosError);
+}

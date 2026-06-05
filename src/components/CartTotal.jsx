@@ -9,13 +9,10 @@ function CartTotal({ products, cart }) {
         )
     }, [products, cart]);
 
-    const subTotal = useMemo(() => {
-        let Total = 0;
-        for (let i = 0; i < totalArr.length; i++) {
-            Total += totalArr[i];
-        }
-        return Total;
-    }, [totalArr]);
+    const subTotal = useMemo(() => 
+        totalArr.reduce((prev, curr) => {
+          return +prev + curr;
+        },0), [totalArr]);
 
 
 

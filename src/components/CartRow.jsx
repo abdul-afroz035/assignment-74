@@ -1,9 +1,10 @@
 import React, { useMemo, useCallback } from "react";
 import { RxCrossCircled } from "react-icons/rx";
+import { useCartProvider } from "../contexts/CartContext";
 
-function CartRow({ product, quantity, onProductRemove, onQuantityChange,  }) {
+function CartRow({ product, quantity, onQuantityChange,  }) {
 
-
+  const {removeProduct} = useCartProvider();
   const subTotal = useMemo(() => {
      return (product.price * quantity);
   }, [quantity]);
@@ -11,10 +12,10 @@ function CartRow({ product, quantity, onProductRemove, onQuantityChange,  }) {
    const handleChange = useCallback((event) => {
          onQuantityChange(+event.target.value, product.id);
 
-    }, [event,product.id ]);
+    }, [product.id ]);
 
    const handleRemove = useCallback(() => {
-       onProductRemove(product.id);
+       removeProduct(product.id);
    }, [product.id]);
  
 
