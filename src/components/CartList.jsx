@@ -3,8 +3,12 @@ import CartRow from "./CartRow";
 import Button from "./Button";
 import { useState, useEffect } from "react";
 import CartTotal from "./CartTotal";
+import { useCartProvider } from "../contexts/CartContext";
 
-function CartList({ products, cart, updateCart, setLoading }) {
+function CartList() {
+
+    const { cart, updateCart, products, setLoading } = useCartProvider();
+    
     const [localCart, setLocalCart] = useState(cart);
 
     useEffect(function () {
@@ -17,17 +21,7 @@ function CartList({ products, cart, updateCart, setLoading }) {
 
         const newLocalcart = { ...localCart, [productId]: newValue };
         setLocalCart(newLocalcart);
-    }, []);
-
-
-    const handleProductRemove = useCallback((id) => {
-        const newCart = { ...cart };
-
-        delete newCart[id];
-
-        updateCart(newCart);
-        setLoading(true);
-    }, [cart]);
+    }, [localCart]);
 
 
     const updateMyCart = useCallback(() => {
@@ -47,7 +41,7 @@ function CartList({ products, cart, updateCart, setLoading }) {
                 <div>
                     {products.map(function (p) {
                         return (
-                            <CartRow key={p.id} product={p} quantity={localCart[p.id]} onProductRemove={handleProductRemove} onQuantityChange={handleQuantityChange} />
+                            <CartRow key={p.id} product={p} quantity={localCart[p.id]} onQuantityChange={handleQuantityChange} />
                         )
                     })}
                 </div>

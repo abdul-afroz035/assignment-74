@@ -1,10 +1,10 @@
 import React, { useContext, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { FaUser, FaBoxOpen, FaHeart, FaCog } from "react-icons/fa";
-import { UserContext } from "../contexts/UserContext";
+import { useUserProvider } from "../contexts/UserContext";
 
 const Dashboard = () => {
-  const { user, logout } = useContext(UserContext);
+  const { user, logout } = useUserProvider();
 
   const navigate = useNavigate();
 

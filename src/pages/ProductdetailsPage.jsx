@@ -48,7 +48,7 @@ function ProductdetailsPage() {
     }
 
     return (
-        <div class=" max-w-6xl mx-auto">
+        <div className=" max-w-6xl mx-auto">
 
             <Link to="/" className=" flex items-center my-4">
                 <FaArrowLeft /> HomePage
@@ -56,18 +56,18 @@ function ProductdetailsPage() {
 
             <div className="bg-white lg:flex lg:gap-6 space-y-4 my-4 p-6">
                 <div className=" h-full lg:w-[40%]">
-                    <img class="max-h-full  lg:w-full lg:shrink-0 bg-gray-light"
+                    <img className="max-h-full  lg:w-full lg:shrink-0 bg-gray-light"
                         src={Product.thumbnail} />
                 </div>
 
-                <div class=" space-y-3 lg:space-y-4 lg:my-10 lg:w-[60%] ">
-                    <div class="text-3xl font-mono lg:text-3xl text-cyan-900">{Product.title}</div>
-                    <div class=" text-xl lg:text-xl text-cyan-900 font-bold "> RS: {Product.price}</div>
-                    <div class=" text-lg lg:text-lg text-cyan-900 font-serif">{Product.description}
+                <div className=" space-y-3 lg:space-y-4 lg:my-10 lg:w-[60%] ">
+                    <div className="text-3xl font-mono lg:text-3xl text-cyan-900">{Product.title}</div>
+                    <div className=" text-xl lg:text-xl text-cyan-900 font-bold "> RS: {Product.price}</div>
+                    <div className=" text-lg lg:text-lg text-cyan-900 font-serif">{Product.description}
                     </div>
                     <div>
                        
-                        <input class="w-12 pl-2 border-2 border-black rounded-sm"
+                        <input className="w-12 pl-2 border-2 border-black rounded-sm"
                         type="number"
                         value = {count}
                         onChange = {HandleCountChange}>

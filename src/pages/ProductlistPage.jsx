@@ -9,7 +9,7 @@ import { range } from 'lodash';
 
 function ProductlistPage() {
   const [LoadingData, setLoading] = useState(true)
-
+  const [pages, setPages] = useState([]);
 
   const [productData, setProductData] = useState({
     products: [],
@@ -21,12 +21,17 @@ function ProductlistPage() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const params = Object.fromEntries([...searchParams]);
-  let page = +params.page || 1;                          
-  let query = params.query || "";  
-  let sort = params.sort || "default"   
+  let currentPage = +params.page || 1;
+  let query = params.query || "";
+  let sort = params.sort || "default"
 
-  useEffect(() => {  
-    let sortBy;  
+
+  const totalPages = Math.ceil(productData.total / 12);
+  let keyss = 1;
+
+
+  useEffect(() => {
+    let sortBy;
     let order;
 
     if (sort === "title") {
@@ -40,8 +45,8 @@ function ProductlistPage() {
       order = "desc";
     }
 
-    const promise = query ? searchProducts(query, sortBy, order, page) :
-      getProductsList(sortBy, order, page);
+    const promise = query ? searchProducts(query, sortBy, order, currentPage) :
+      getProductsList(sortBy, order, currentPage);
 
     promise.then(function (data) {
       setProductData(data);
@@ -51,22 +56,58 @@ function ProductlistPage() {
         console.error("Error fetching products:", error);
         setLoading(false);
       });
-  },[query, sort, page] );
+  }, [query, sort, currentPage]);
+
 
 
   const handleSearchChange = useCallback((event) => {
     const newquery = event.target.value;
-    const newParams = {query: newquery, page: 1 };
+    const newParams = { query: newquery, page: 1 };
     setSearchParams((newParams), { replace: false });
-  }, [query,sort]);
+  }, [query, sort]);
 
   const handleSort = useCallback((event) => {
     const newsort = event.target.value;
     const newParams = { ...params, sort: newsort, page: 1 };
     setSearchParams((newParams), { replace: false });
-  }, [query,sort]);
+  }, [query, sort]);
 
-  const lastPage = Math.ceil(productData.total / 12);
+  const handlePageChange = useCallback((newPage) => {
+    const newParams = { ...params, page: newPage };
+    setSearchParams((newParams), { replace: false });
+  }, [query, sort]);
+
+  useEffect(() => {
+    const getPagination = () => {
+      const myPages = [];
+
+      myPages.push(1);
+
+      if (currentPage > 3) {
+        myPages.push("...")
+      }
+
+      for (let i = Math.max(2, currentPage - 1);
+        i <= Math.min(totalPages - 1, currentPage + 2); i++) {
+        myPages.push(i);
+      }
+
+      if (currentPage < (totalPages - 2)) {
+        myPages.push("...");
+      }
+
+      if (totalPages > 1) {
+        myPages.push(totalPages);
+      }
+
+      return [...new Set(myPages)];       // this will remove repeated numbers and covert them into array
+    };
+
+    const getPages = getPagination();
+    setPages(getPages);
+
+  }, [query, sort, currentPage, totalPages])
+
 
   if (LoadingData) {
     return <Loading />
@@ -97,17 +138,33 @@ function ProductlistPage() {
 
       {productData.products.length > 0 && <Productlist Products={productData.products} />}
       {productData.products.length == 0 && <NoMatching />}
-       
-      {range(1, lastPage + 1).map((pageNo) => (
-        <Link
-           key = {pageNo}
-           to={"?" + new URLSearchParams ({...params, page: pageNo })}
-           className = {"text-shadow-mauve-50 text-primary-default  border-2  bg-primary-default cursor-pointer px-2 py-1 m-1 "
-               + (pageNo === page ? "bg-primary-default border-white text-white" : "bg-white border-primary-default")
-           }>
-           {pageNo}
-        </Link>
+
+      <button
+        disabled={currentPage === 1}
+        onClick={() => handlePageChange(currentPage - 1)}
+        className="disabled:hidden text-primary-default font-serif mr-2"
+      > prev
+      </button>
+      {pages.map((pageNo, index) => (
+        pageNo === "..." ? (
+          <span key={index + 100}> ... </span>    //here index and pageNo is might be same thatswhy i have used (ind+100)
+        ) : (
+          <Link
+            key={pageNo}
+            to={"?" + new URLSearchParams({ ...params, page: pageNo })}
+            className={"text- text-primary-default  border-2  bg-primary-default cursor-pointer px-2 py-1 m-1 hover:border-blue-900  "
+              + (pageNo === currentPage ? "bg-primary-default border-white text-white" : "bg-white border-primary-default")
+            }>
+            {pageNo}
+          </Link>
+        )
       ))}
+
+      <button
+        onClick={() => handlePageChange(currentPage + 1)}
+        className="disabled:hidden text-primary-default font-serif ml-2"
+      > next
+      </button>
 
     </div>
 

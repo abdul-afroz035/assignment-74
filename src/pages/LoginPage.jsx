@@ -1,13 +1,13 @@
-import React, { useContext } from "react";
+import React from "react";
 import axios from "axios";
 import { withFormik } from "formik";
 import Input from "../components/Input";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
 import { CiShoppingCart } from "react-icons/ci";
-import { UserContext } from "../contexts/UserContext";
 import Button from "../components/Button";
 import { signInUser } from "../api";
+import { useUserProvider } from "../contexts/UserContext";
 
 function callLoginApi(values, { setSubmitting, props }) {
     const navigate = props.navigate;
@@ -114,7 +114,7 @@ export function LoginPage({ handleSubmit, errors, touched, values, handleChange,
                 </div>
 
                 <div className="self-center text-sm mt-2 text-gray-400 "> don't have an account?
-                    <Link to="/signupPage" className="text-primary-default underline hover:text-primary-dark"> Signup </Link>
+                    <Link to="/SignupPage" className="text-primary-default underline hover:text-primary-dark"> Signup </Link>
                 </div>
             </form>
         </div>
@@ -130,6 +130,6 @@ const OptimizedLoginPage = withFormik({
 
 export default function LoginPageWithNavigate() {
     const navigate = useNavigate();
-    const { login } = useContext(UserContext);
+    const { login } = useUserProvider();
     return <OptimizedLoginPage navigate={navigate} login={login} />;
 }
